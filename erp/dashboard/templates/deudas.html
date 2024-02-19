@@ -1,0 +1,33 @@
+{% extends 'list.html' %}
+{% block columns %}
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">DNI del Usuario / Nombre</th>
+    
+    {% comment %} <th data-priority="1" scope="col" class="px-6 py-3 text-center">Telefono</th> {% endcomment %}
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Monto</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Fecha de emisión</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Fecha de vencimiento</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Estado</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Opciones</th>
+    {% endblock %}
+{% block rows %}
+    {% for obj in object_list %}
+            <tr class=" border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.contribuyente.DNI }} / {{ obj.contribuyente.nombres }}</td>
+                
+                {% comment %} <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.contribuyente.telefono }}</td> {% endcomment %}
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">S/ {{ obj.monto_deuda }}</td>
+                <td scope="row" class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.fecha }}</td>
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.fecha_vencimiento }}</td>
+                <td scope="row" class="px-6 py-4 uppercase font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.estado }}</td>
+
+                <td class="text-center">
+                    <a href="{% url 'edit' obj.id %}" class="btn btn-primary btn-xs btn-flat">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="#" class="btn btn-danger btn-xs btn-flat">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endblock %}

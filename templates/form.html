@@ -1,0 +1,206 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block head %}
+    {% comment %} <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/select2-4.0.13/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/select2-4.0.13/select2-bootstrap4.min.css' %}">
+    <script src="{% static 'lib/select2-4.0.13/select2-4.0.13/dist/js/select2.min.js' %}"></script> {% endcomment %}
+    <!-- CSS de Select2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap4-theme/1.6.2/select2-bootstrap4.min.css">
+
+<!-- JS de Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    {% comment %} <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script> {% endcomment %}
+
+    <style>
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+    
+    {% endblock %}
+{% load widget_tweaks %}
+{% block content %}
+    <form method="post"  enctype="multipart/form-data">
+        <div class="card card-dark">
+            <div class="card-header" style="background-color: #022F50 !important;">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i style="margin-right: 10px" class="fas fa-user-plus"></i>
+                    {% else %}
+                        <i style="margin-right: 10px" class="fas fa-user-edit"></i>
+                    {% endif %}
+
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                {% comment %} <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15608.771322963388!2d-77.0679477!3d-12.0302419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2spe!4v1705607341464!5m2!1ses-419!2spe" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> {% endcomment %}
+                {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        <label>{{ field.label }}:</label>
+                        {{ field }}
+                    </div>
+                    
+                {% endfor %}
+                
+            </div>
+            <div id="map" hidden></div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-flat">
+                    <i class="fas fa-save"></i> Guardar registro
+                </button>
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+    {% block javascript %}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF417Ec9Q2I8whl9osMlpPXNJV4HU0rqg&libraries=places&callback=initAutocomplete" async defer></script>
+    <script>
+        let map;
+        let marker;
+
+        function initAutocomplete() {
+            const input = document.getElementById('id_ubicacion');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ['geocode'],
+                componentRestrictions: { country: 'PE' } // Limitar la búsqueda a Perú
+            });
+
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    console.error("La dirección no tiene detalles de geolocalización");
+                    return;
+                }
+
+                const addressComponents = place.address_components;
+                updateAddressFields(addressComponents);
+                showMap(place.geometry.location);
+            });
+        }
+
+        function updateAddressFields(components) {
+            const department = components.find(component => component.types.includes('administrative_area_level_1'))?.long_name || '';
+            const province = components.find(component => component.types.includes('administrative_area_level_2'))?.long_name || '';
+            const district = components.find(component => component.types.includes('locality'))?.long_name || '';
+            const zone = components.find(component => component.types.includes('sublocality'))?.long_name || '';
+
+            document.getElementById('id_departamento').value = department;
+            document.getElementById('id_provincia').value = province;
+            document.getElementById('id_distrito').value = district;
+            document.getElementById('id_zona').value = zone;
+        }
+
+        function showMap(location) {
+            const div_map= document.getElementById('map')
+            div_map.removeAttribute('hidden')
+            if (!map) {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: location,
+                    zoom: 15
+                });
+            } else {
+                map.setCenter(location);
+            }
+
+            if (!marker) {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+            } else {
+                marker.setPosition(location);
+            }
+        }
+
+        window.onload = function() {
+            const id_ubicacion = document.getElementById('id_ubicacion');
+            id_ubicacion.addEventListener('input', function() {
+                const address = this.value.trim();
+                if (address === '') {
+                    document.getElementById('id_departamento').value = '';
+                    document.getElementById('id_provincia').value = '';
+                    document.getElementById('id_distrito').value = '';
+                    document.getElementById('id_zona').value = '';
+                    document.getElementById('map').innerHTML = ''; // Limpiar el mapa
+                    document.getElementById('map').addAttribute('hidden');
+                    map = null;
+                    marker = null;
+                }
+            });
+        };
+    </script>
+
+
+
+        <script>
+        $(document).ready(function () {
+                // Función para habilitar o deshabilitar el campo RUC
+
+                function toggleRucField() {
+                    var personaJuridica = $('#id_persona_juridica').prop('checked');
+                    var rucInput = $('#id_ruc');
+
+                    // Verificar si el checkbox de persona jurídica está marcado
+                    if (personaJuridica) {
+                        // Si está marcado, desactivar el campo RUC y borrar su valor
+                        rucInput.prop('disabled', true);
+                        rucInput.val('');
+                    } else {
+                        // Si no está marcado, habilitar el campo RUC
+                        rucInput.prop('disabled', false);
+                    }
+                }
+
+                // Llamar a la función al cargar la página
+                toggleRucField();
+
+                // Llamar a la función cuando cambie el valor de persona_juridica
+                $('#id_persona_juridica').change(function () {
+                    toggleRucField();
+                });
+            });
+
+        errors = ''
+         {% if form.errors %}
+             {% for field in form %}
+                 {% for error in field.errors %}
+                     errors+='{{ error }}'
+                 {% endfor %}
+             {% endfor %}
+             Swal.fire({
+                 title : 'Error!',
+                 text: errors,
+                 icon: 'error',
+                 confirmButtonText: 'Ok'
+             })
+         {% endif %}
+
+        $('.select2').select2({
+            theme : "classic",
+            width: '100%',
+        });
+       
+
+        </script>
+    {% endblock %}
+{% endblock %}

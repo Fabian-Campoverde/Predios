@@ -1,0 +1,192 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block head %}
+    {% comment %} <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/select2-4.0.13/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/select2-4.0.13/select2-bootstrap4.min.css' %}">
+    <script src="{% static 'lib/select2-4.0.13/select2-4.0.13/dist/js/select2.min.js' %}"></script> {% endcomment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+    
+    {% endblock %}
+{% load widget_tweaks %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" autocomplete="off">
+    {% csrf_token %}
+   
+    
+
+    <div class="card">
+        <div class="card-header" style="background-color: #022F50 !important;">
+            <div >
+                <h3 class="card-title text-white" >
+                    <i style="margin-right: 10px" class="fas fa-user-plus"></i>
+                    Datos de Usuario
+                </h3>
+            </div>
+        
+          <div class="card-tools">
+            <!-- Collapse Button -->
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+          <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <input type="hidden" name="action" value="{{ action }}">
+            {% for field in user_form.visible_fields %}
+                <div class="form-group">
+                    <label>{{ field.label }}:</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="card">
+        <div class="card-header" style="background-color: #022F50 !important;">
+            <div >
+                <h3 class="card-title text-white" >
+                    <i style="margin-right: 10px" class="fas fa-user-plus"></i>
+                    {{ title}}
+                </h3>
+            </div>
+        
+          <div class="card-tools">
+            <!-- Collapse Button -->
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+          <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <input type="hidden" name="action" value="{{ action }}">
+            {% for field in profile_form.visible_fields %}
+                <div class="form-group">
+                    <label>{{ field.label }}:</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    
+
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary btn-flat">
+            <i class="fas fa-save"></i> Guardar registro
+        </button>
+        <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+            <i class="fas fa-times"></i> Cancelar
+        </a>
+    </div>
+</form>
+    {% block javascript %}
+    {% if user_form.errors %}
+    <script>
+        var errors = '';
+        {% for field in user_form %}
+            {% for error in field.errors %}
+                errors += '{{ error }}\n';
+            {% endfor %}
+        {% endfor %}
+        Swal.fire({
+            title: 'Error!',
+            text: errors,
+            icon: 'error',
+            confirmButtonText: 'Ok'
+        });
+    </script>
+{% endif %}
+
+{% if profile_form.errors %}
+    <script>
+        var errors = '';
+        {% for field in profile_form %}
+            {% for error in field.errors %}
+                errors += '{{ error }}\n';
+            {% endfor %}
+        {% endfor %}
+        Swal.fire({
+            title: 'Error!',
+            text: errors,
+            icon: 'error',
+            confirmButtonText: 'Ok'
+        });
+    </script>
+{% endif %}
+{% if profile_form_errors %}
+    <script>
+        var errors = '';
+        {% for field, error_list in profile_form_errors.items %}
+            {% for error in error_list %}
+                errors += '{{ error }}\n';
+            {% endfor %}
+        {% endfor %}
+        Swal.fire({
+            title: 'Error!',
+            text: errors,
+            icon: 'error',
+            confirmButtonText: 'Ok'
+        });
+    </script>
+{% endif %}
+
+
+
+        <script>
+        $(document).ready(function () {
+                // Función para habilitar o deshabilitar el campo RUC
+                function toggleRucField() {
+                    
+                    var personaJuridica = $('#id_persona_juridica').prop('checked');
+                    var rucInput = $('#id_ruc');
+
+                    // Verificar si el checkbox de persona jurídica está marcado
+                    if (personaJuridica) {
+                        // Si está marcado, desactivar el campo RUC y borrar su valor
+                        rucInput.prop('disabled', true);
+                        rucInput.val('');
+                    } else {
+                        // Si no está marcado, habilitar el campo RUC
+                        rucInput.prop('disabled', false);
+                    }
+                }
+
+                // Llamar a la función al cargar la página
+                toggleRucField();
+
+                // Llamar a la función cuando cambie el valor de persona_juridica
+                $('#id_persona_juridica').change(function () {
+                    toggleRucField();
+                });
+            });
+
+        {% comment %} errors = ''
+         {% if form.errors %}
+             {% for field in form %}
+                 {% for error in field.errors %}
+                     errors+='{{ error }}'
+                 {% endfor %}
+             {% endfor %}
+             Swal.fire({
+                 title : 'Error!',
+                 text: errors,
+                 icon: 'error',
+                 confirmButtonText: 'Ok'
+             })
+         {% endif %} {% endcomment %}
+
+        $('.select2').select2({
+            theme : "bootstrap4"
+        });
+
+        </script>
+        
+
+
+    {% endblock %}
+{% endblock %}
+{% comment %} {% extends 'form.html' %} {% endcomment %}

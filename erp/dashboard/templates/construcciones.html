@@ -1,0 +1,33 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block columns %}
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Nro</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Dueño</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Ubicacion</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">N° Piso</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Material</th>
+    <th data-priority="1" scope="col" class="px-6 py-3 text-center">Estado</th>
+    <th data-priority="1" scope="col" jclass="px-6 py-3 text-center">Opciones</th>
+    {% endblock %}
+{% block rows %}
+    {% for obj in object_list %}
+            <tr class=" border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.id }}</td>
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.predio.propietario.nombres }}</td>
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.predio.ubicacion }}</td>
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.numero_piso }}</td>
+                <td scope="row" class="px-6 py-4 font-medium  text-gray-900 whitespace-nowrap text-center">{{ obj.material_estructural_predominante }}</td>
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">{{ obj.estado_construccion }}</td>
+
+
+                <td class="text-center">
+                    <a href="{% url 'editconstruccion' obj.id %}" class="btn btn-primary btn-xs btn-flat">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url "delconstruccion" obj.id %}" class="btn btn-danger btn-xs btn-flat">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endblock %}
