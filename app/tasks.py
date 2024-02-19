@@ -91,7 +91,7 @@ def send_email(deuda, message1, message2):
         except Exception as e:
             print("Error al enviar el correo:", e)
 
-schedule.every().day.at("20:17").do(enviar_correos)
+schedule.every().day.at("09:50").do(enviar_correos)
 #schedule.every(1).minutes.do(enviar_correos)
 
 # Ejecutar el planificador en un bucle infinito
