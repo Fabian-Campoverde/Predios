@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, ListView
 from erp.dashboard.models import *
 from erp.mixins import IsSuperUserMixin
 from erp.userauths.forms import ProfileForm
-from erp.userauths.models import Profile, Predio
+from erp.userauths.models import Deuda, Profile, Predio
 
 
 class ViewDashboard(LoginRequiredMixin, ListView):
@@ -80,10 +80,11 @@ def list_deudas(request):
 
     user_profile = Profile.objects.get(user=request.user)
     deudas_pendientes = user_profile.deuda_set.filter(estado='pendiente')
+    # deudas_count= Deuda.objects.filter(contribuyente=self, estado='pendiente').count()
     context = {
         'user_profile': user_profile,
         'deudas_pendientes': deudas_pendientes,
-        'profile':profile
+        'profile':profile,
     }
     return render(request, 'deudas_user.html', context)
 

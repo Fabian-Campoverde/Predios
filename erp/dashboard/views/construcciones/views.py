@@ -4,13 +4,14 @@ import smtplib
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView,DeleteView
 from django.template.loader import render_to_string
 from erp.userauths.models import Construccion
-from erp.dashboard.forms import ConstruccionForm
+from erp.dashboard.forms import ConstruccionForm, PredioForm
 from erp.dashboard.models import *
 from app.settings import *
 
@@ -47,11 +48,29 @@ class NewConstruccion(PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Nueva construccion en construccion'
+        context['title'] = 'Nueva construccion en Predio'
         context['list_url'] = reverse_lazy('construcciones')
         context['entity'] = 'Construcciones'
         context['action'] = 'add'
         return context
+    
+    # def get(self, request, *args, **kwargs):
+    #     construccion_form = ConstruccionForm()
+    #     predio_form = PredioForm()
+    #     return render(request, self.template_name, {'construccion_form': construccion_form, 'predio_form': predio_form})
+
+    # def post(self, request, *args, **kwargs):
+    #     construccion_form = ConstruccionForm(request.POST)
+    #     predio_form = PredioForm(request.POST)
+    #     if construccion_form.is_valid() and predio_form.is_valid():
+    #         predio = predio_form.save()
+    #         construccion = construccion_form.save(commit=False)
+    #         construccion.predio = predio
+    #         construccion.save()
+    #         return redirect(self.success_url)
+    #     else:
+    #         # Volver a renderizar la plantilla con los formularios y los errores
+    #         return render(request, self.template_name, {'predio_form': predio_form, 'construccion_form': construccion_form})
     
     def send_email(self, construccion):
         try:

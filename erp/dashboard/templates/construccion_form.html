@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap4-theme/1.6.2/select2-bootstrap4.min.css">
+
+<!-- JS de Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     
     {% endblock %}
 {% load widget_tweaks %}
@@ -16,12 +21,12 @@
    
     
 
-    <div class="card">
+    <div class="card card-primary collapsed-card">
         <div class="card-header" style="background-color: #022F50 !important;">
             <div >
                 <h3 class="card-title text-white" >
                     <i style="margin-right: 10px" class="fas fa-user-plus"></i>
-                    Datos de Usuario
+                    Datos de Predio
                 </h3>
             </div>
         
@@ -34,7 +39,7 @@
         <!-- /.card-header -->
         <div class="card-body">
             <input type="hidden" name="action" value="{{ action }}">
-            {% for field in user_form.visible_fields %}
+            {% for field in predio_form.visible_fields %}
                 <div class="form-group">
                     <label>{{ field.label }}:</label>
                     {{ field }}
@@ -50,7 +55,7 @@
             <div >
                 <h3 class="card-title text-white" >
                     <i style="margin-right: 10px" class="fas fa-user-plus"></i>
-                    Datos de Contribuyente
+                    Datos de Construccion
                 </h3>
             </div>
         
@@ -63,7 +68,7 @@
         <!-- /.card-header -->
         <div class="card-body">
             <input type="hidden" name="action" value="{{ action }}">
-            {% for field in profile_form.visible_fields %}
+            {% for field in construccion_form.visible_fields %}
                 <div class="form-group">
                     <label>{{ field.label }}:</label>
                     {{ field }}
@@ -84,10 +89,10 @@
     </div>
 </form>
     {% block javascript %}
-    {% if user_form.errors %}
+    {% if predio_form.errors %}
     <script>
         var errors = '';
-        {% for field in user_form %}
+        {% for field in predio_form %}
             {% for error in field.errors %}
                 errors += '{{ error }}\n';
             {% endfor %}
@@ -101,10 +106,10 @@
     </script>
 {% endif %}
 
-{% if profile_form.errors %}
+{% if construccion_form.errors %}
     <script>
         var errors = '';
-        {% for field in profile_form %}
+        {% for field in construccion_form %}
             {% for error in field.errors %}
                 errors += '{{ error }}\n';
             {% endfor %}
@@ -117,7 +122,7 @@
         });
     </script>
 {% endif %}
-{% if profile_form_errors %}
+{% comment %} {% if profile_form_errors %}
     <script>
         var errors = '';
         {% for field, error_list in profile_form_errors.items %}
@@ -132,7 +137,7 @@
             confirmButtonText: 'Ok'
         });
     </script>
-{% endif %}
+{% endif %} {% endcomment %}
 
 
 
@@ -179,8 +184,9 @@
              })
          {% endif %} {% endcomment %}
 
-        $('.select2').select2({
-            theme : "bootstrap4"
+         $('.select2').select2({
+            theme : "classic",
+            width: '100%',
         });
 
         </script>

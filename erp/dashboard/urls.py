@@ -23,5 +23,6 @@ urlpatterns = [
     path('Construccion/Edit/<int:pk>', EditConstruccion.as_view(), name='editconstruccion'),
 
     path('Users/Delete/<int:pk>', DeleteContribuyente.as_view(), name="delcontrib"),
+    path('Deuda/Delete/<int:pk>', DeleteDeuda.as_view(), name="deldeuda"),
     path('Construccion/Delete/<int:pk>', DeleteConstruccion.as_view(), name="delconstruccion"),
 ]

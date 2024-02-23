@@ -20,8 +20,7 @@ def enviar_correos():
         # for deuda in deudas_hoy:
         #     send_email(deuda)
 
-         # Obtener la fecha actual
-     # Obtener la fecha actual
+       
     # Obtener la zona horaria de Perú
     zona_horaria_peru = pytz.timezone('America/Lima')
 
@@ -33,9 +32,9 @@ def enviar_correos():
     # Obtener todas las deudas
     todas_deudas = Deuda.objects.all()
 
-    # Iterar sobre todas las deudas y enviar correos basados en la fecha de vencimiento
+    
     for deuda in todas_deudas:
-        if deuda.fecha_vencimiento is not None:  # Verificar si la fecha de vencimiento no es None
+        if deuda.fecha_vencimiento is not None:  
             dias_hasta_vencimiento = (deuda.fecha_vencimiento - fecha_actual).days
             print(dias_hasta_vencimiento)
 
@@ -91,7 +90,7 @@ def send_email(deuda, message1, message2):
         except Exception as e:
             print("Error al enviar el correo:", e)
 
-schedule.every().day.at("09:50").do(enviar_correos)
+schedule.every().day.at("12:06:10").do(enviar_correos)
 #schedule.every(1).minutes.do(enviar_correos)
 
 # Ejecutar el planificador en un bucle infinito

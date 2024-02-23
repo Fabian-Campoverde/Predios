@@ -87,15 +87,16 @@ class Predio(models.Model):
 ESTADO_CHOICES = (
     ('pendiente', 'Pendiente'),
     ('cancelado', 'Cancelado'),
-    ('vencido', 'vencido'),
+    ('vencido', 'Vencido'),
 )
 
 ESTADO_DEUDA_CHOICES= (
-    ('Impuestos','Inpuestos'),
+    ('Impuestos','Impuestos'),
     ('Servicios','Servicios'),
     ('Cuotas','Cuotas'),
     ('Otros','Otros')
 )
+
 class Deuda(models.Model):
     contribuyente = models.ForeignKey(Profile, on_delete=models.CASCADE)
     monto_deuda = models.PositiveIntegerField()

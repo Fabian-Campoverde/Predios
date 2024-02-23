@@ -19,4 +19,5 @@ class IndexView(PermissionRequiredMixin, TemplateView):
         context['predio_count'] = Predio.objects.count()
         context['perfil_count'] = Profile.objects.count()
         context['construccion_count']= Construccion.objects.count()
+        context['title']= 'Home'
         return context
